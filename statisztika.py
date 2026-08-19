@@ -1,4 +1,3 @@
-from datetime import datetime
 import datetime as dt
 import customtkinter as ctk
 
@@ -7,7 +6,7 @@ class StatisztikaNezet(ctk.CTkFrame):
 
   def __init__(self, master, gyerek_lista=None, **kwargs):
     super().__init__(master, **kwargs)
-    
+
     self.gyerek_lista = gyerek_lista if gyerek_lista is not None else []
 
     self.adatok_feldolgozasa()
@@ -46,7 +45,7 @@ class StatisztikaNezet(ctk.CTkFrame):
         # Kipróbáljuk a leggyakoribb formátumokat
         for fmt in ("%Y.%m.%d", "%Y-%m-%d", "%Y.%m.%d.", "%Y/%m/%d"):
           try:
-            szul_datum = datetime.strptime(datum_str, fmt).date()
+            szul_datum = dt.datetime.strptime(datum_str, fmt).date()
             break
           except ValueError:
             continue
@@ -57,8 +56,10 @@ class StatisztikaNezet(ctk.CTkFrame):
             eletkor = (
                 mai_nap.year
                 - szul_datum.year
-                - ((mai_nap.month, mai_nap.day)
-                < (szul_datum.month, szul_datum.day))
+                - (
+                    (mai_nap.month, mai_nap.day)
+                    < (szul_datum.month, szul_datum.day)
+                )
             )
             if eletkor >= 0:
               self.eletkorok[eletkor] = self.eletkorok.get(eletkor, 0) + 1
@@ -69,16 +70,16 @@ class StatisztikaNezet(ctk.CTkFrame):
     label_cim = ctk.CTkLabel(
         self,
         text="📊 Óvodai Mutatók és Statisztika",
-        font=("Segoe UI", 20, "bold"),
+        font=("Segoe UI", 26, "bold"),
     )
-    label_cim.pack(pady=(15, 10))
+    label_cim.pack(pady=(20, 15))
 
-    scroll_frame = ctk.CTkScrollableFrame(self, width=540, height=480)
-    scroll_frame.pack(padx=15, pady=10, fill="both", expand=True)
+    scroll_frame = ctk.CTkScrollableFrame(self, width=700, height=600)
+    scroll_frame.pack(padx=20, pady=15, fill="both", expand=True)
 
     # 1. Összesítő kártyák
     top_frame = ctk.CTkFrame(scroll_frame)
-    top_frame.pack(fill="x", pady=5)
+    top_frame.pack(fill="x", pady=10)
     self._kartya_kreálás(
         top_frame, "Összes gyerek", str(self.osszes_gyerek), 0, 0
     )
@@ -89,9 +90,9 @@ class StatisztikaNezet(ctk.CTkFrame):
     lbl_eletkor = ctk.CTkLabel(
         scroll_frame,
         text="Életkori megoszlás (betöltött év)",
-        font=("Segoe UI", 14, "bold"),
+        font=("Segoe UI", 18, "bold"),
     )
-    lbl_eletkor.pack(anchor="w", pady=(15, 5))
+    lbl_eletkor.pack(anchor="w", pady=(25, 10))
 
     eletkor_frame = ctk.CTkFrame(scroll_frame)
     eletkor_frame.pack(fill="x", pady=5)
@@ -101,17 +102,23 @@ class StatisztikaNezet(ctk.CTkFrame):
       szazalek = db / self.osszes_gyerek if self.osszes_gyerek > 0 else 0
 
       row = ctk.CTkFrame(eletkor_frame, fg_color="transparent")
-      row.pack(fill="x", padx=10, pady=4)
+      row.pack(fill="x", padx=15, pady=8)
 
-      lbl_ev = ctk.CTkLabel(row, text=f"{ev} éves:", width=60, anchor="w")
+      lbl_ev = ctk.CTkLabel(
+          row, text=f"{ev} éves:", font=("Segoe UI", 15, "bold"), width=90, anchor="w"
+      )
       lbl_ev.pack(side="left")
 
-      progress = ctk.CTkProgressBar(row)
+      progress = ctk.CTkProgressBar(row, height=16)
       progress.set(szazalek)
-      progress.pack(side="left", fill="x", expand=True, padx=10)
+      progress.pack(side="left", fill="x", expand=True, padx=15)
 
       lbl_db = ctk.CTkLabel(
-          row, text=f"{db} fő ({int(szazalek*100)}%)", width=80, anchor="e"
+          row,
+          text=f"{db} fő ({int(szazalek*100)}%)",
+          font=("Segoe UI", 15),
+          width=110,
+          anchor="e",
       )
       lbl_db.pack(side="right")
 
@@ -119,9 +126,9 @@ class StatisztikaNezet(ctk.CTkFrame):
     lbl_jogallas = ctk.CTkLabel(
         scroll_frame,
         text="Specialitások & Kategóriák",
-        font=("Segoe UI", 14, "bold"),
+        font=("Segoe UI", 18, "bold"),
     )
-    lbl_jogallas.pack(anchor="w", pady=(15, 5))
+    lbl_jogallas.pack(anchor="w", pady=(25, 10))
 
     jog_frame = ctk.CTkFrame(scroll_frame)
     jog_frame.pack(fill="x", pady=5)
@@ -138,22 +145,22 @@ class StatisztikaNezet(ctk.CTkFrame):
 
   def _kartya_kreálás(self, master, cim, ertek, row, col):
     card = ctk.CTkFrame(master)
-    card.grid(row=row, column=col, padx=8, pady=8, sticky="ew")
+    card.grid(row=row, column=col, padx=12, pady=12, sticky="ew")
     master.grid_columnconfigure(col, weight=1)
     ctk.CTkLabel(
-        card, text=cim, font=("Segoe UI", 11), text_color="gray70"
-    ).pack(pady=(8, 0))
-    ctk.CTkLabel(card, text=ertek, font=("Segoe UI", 18, "bold")).pack(
-        pady=(0, 8)
+        card, text=cim, font=("Segoe UI", 14), text_color="gray70"
+    ).pack(pady=(12, 2))
+    ctk.CTkLabel(card, text=ertek, font=("Segoe UI", 26, "bold")).pack(
+        pady=(0, 12)
     )
 
   def _sor_kirazas(self, master, cim, ertek):
     row = ctk.CTkFrame(master, fg_color="transparent")
-    row.pack(fill="x", padx=10, pady=5)
-    ctk.CTkLabel(row, text=cim, font=("Segoe UI", 12)).pack(side="left")
+    row.pack(fill="x", padx=15, pady=10)
+    ctk.CTkLabel(row, text=cim, font=("Segoe UI", 15)).pack(side="left")
     szazalek = (
         (ertek / self.osszes_gyerek) * 100 if self.osszes_gyerek > 0 else 0
     )
     ctk.CTkLabel(
-        row, text=f"{ertek} fő ({szazalek:.1f}%)", font=("Segoe UI", 12, "bold")
+        row, text=f"{ertek} fő ({szazalek:.1f}%)", font=("Segoe UI", 15, "bold")
     ).pack(side="right")
