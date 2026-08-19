@@ -68,11 +68,15 @@ CMakeLists.txt.user*
 
 # Python byte code
 *.pyc
+__pycache__/
 
-# Binaries
+# Binaries & PyInstaller kimenetek
 # --------
 *.dll
 *.exe
+dist/
+build/
+*.spec
 
 # Directories with generated files
 .moc/
@@ -83,6 +87,12 @@ CMakeLists.txt.user*
 /build*/
 /.qtcreator/
 
+# Python virtuális környezetek & IDE-k
+venv/
+.venv/
+ENV/
+.vscode/
+.idea/
 
-# Adatbázis
+# Adatbázis és helyi adatfájlok
 gyerek_adatok.csv
