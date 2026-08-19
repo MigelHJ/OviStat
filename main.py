@@ -12,6 +12,7 @@ class App(ctk.CTk):
   def __init__(self):
     super().__init__()
 
+    self.firststart = True # Jelzi, hogy a fájlbeolvasás még nem történt meg
     self.title("Gyerek Nyilvántartó")
     self.after(10, lambda: self.state("zoomed"))
 
@@ -22,9 +23,6 @@ class App(ctk.CTk):
     self.container = ctk.CTkFrame(self)
     self.container.pack(fill="both", expand=True)
 
-    # Betöltjük az adatokat a meglévő CSV fájlból
-    self.fajlbol_betoltes("gyerek_adatok.csv")
-
     self.show_mainpage()
 
   def clear_container(self):
@@ -34,7 +32,12 @@ class App(ctk.CTk):
 
   def show_mainpage(self):
     """Megjeleníti a fő adatbeviteli oldalt."""
-    self.clear_container()
+    if self.firststart:
+      self.adatok_betoltese_fajlbol("gyerek_adatok.csv")
+      self.firststart = False  # Jelöljük, hogy a fájlbeolvasás megtörtént
+    else:
+      self.clear_container()
+
     self.main_page = MainPage(master=self.container, app_controller=self)
     self.main_page.pack(fill="both", expand=True)
 
@@ -67,26 +70,33 @@ class App(ctk.CTk):
     stat_nezet = StatisztikaNezet(stat_frame, gyerek_lista=érvényes_adatok)
     stat_nezet.pack(fill="both", expand=True, padx=10, pady=10)
 
-  def fajlbol_betoltes(self, fajlnev):
-    self.gyerek_adatok.clear()
+  def adatok_betoltese_fajlbol(self, fajlnev="gyerek_adatok.csv"):
+    self.gyerek_adatok = []
     try:
       with open(fajlnev, "r", encoding="utf-8") as file:
         for line in file:
-          data = line.strip().split(",")
-          if len(data) == 6 and data[0].strip():
-            self.gyerek_adatok.append({
-                "gyerek_neve": data[0],
-                "szuletesi_datum": data[1],
-                "bejaras": data[2],
-                "nagycsalados": data[3] == "True",
-                "sni": data[4] == "True",
-                "btm": data[5] == "True",
-            })
-      print(f"Adatok sikeresen betöltve a '{fajlnev}' fájlból.")
+          sor = line.strip()
+          if sor:
+            adatok = sor.split(",")
+            # Ha megvan a 7 mező (id, név, dátum, bejárás, nagycsaládos, sni, btm)
+            if len(adatok) >= 7:
+              self.gyerek_adatok.append({
+                  "id": adatok[0].strip(),
+                  "gyerek_neve": adatok[1].strip(),
+                  "szuletesi_datum": adatok[2].strip(),
+                  "bejaras": adatok[3].strip(),
+                  "nagycsalados": adatok[4].strip().lower() == "true",
+                  "sni": adatok[5].strip().lower() == "true",
+                  "btm": adatok[6].strip().lower() == "true",
+              })
+      print(
+          f"Adatok sikeresen betöltve a '{fajlnev}' fájlból. Beolvasva:"
+          f" {len(self.gyerek_adatok)} gyerek."
+      )
     except FileNotFoundError:
-      print(f"A '{fajlnev}' fájl nem található.")
+      print(f"A(z) '{fajlnev}' fájl még nem létezik.")
     except Exception as e:
-      print(f"Hiba történt a fájl betöltése közben: {e}")
+      print(f"Hiba a fájl beolvasásakor: {e}")
 
 
 if __name__ == "__main__":

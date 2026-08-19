@@ -7,6 +7,7 @@ class StatisztikaNezet(ctk.CTkFrame):
 
   def __init__(self, master, gyerek_lista=None, **kwargs):
     super().__init__(master, **kwargs)
+    
     self.gyerek_lista = gyerek_lista if gyerek_lista is not None else []
 
     self.adatok_feldolgozasa()
@@ -131,7 +132,7 @@ class StatisztikaNezet(ctk.CTkFrame):
     )
     self._sor_kirazas(
         jog_frame,
-        "📘 BTMN (Beilleszkedési, tanulási, magatartási):",
+        "📘 BTMN (Beilleszkedési, tanulási, magatartási nehézségek):",
         self.btm,
     )
 

@@ -40,7 +40,7 @@ class MainPage(ctk.CTkFrame):
 
     self.btn_kiiras = ctk.CTkButton(
         self.bottom_button_frame,
-        text="📊 Statisztikák és Kimutatások",
+        text="Statisztikák és Kimutatások",
         fg_color="#555555",
         hover_color="#333333",
         height=48,
@@ -77,39 +77,47 @@ class MainPage(ctk.CTkFrame):
 
 
   def kartyat_felepit_adatokbol(self):
-    """Létrehozza a kártyákat a memóriában lévő adatokból."""
-    if not self.app_controller.gyerek_adatok:
-      self.gyerek_hozzaadasa()
-    else:
-      for adat in self.app_controller.gyerek_adatok:
-        gyerek_id = adat.get("id")
-        elem = GyerekAdatlap(master=self.scrollable_frame, gyerek_id=gyerek_id)
+      """Létrehozza a kártyákat a memóriában lévő adatokból."""
+      if not self.app_controller.gyerek_adatok:
+        self.gyerek_hozzaadasa()
+      else:
+        for adat in self.app_controller.gyerek_adatok:
+          gyerek_id = adat.get("id")
+          elem = GyerekAdatlap(master=self.scrollable_frame, gyerek_id=gyerek_id)
 
-        elem.entry_nev.insert(0, adat.get("gyerek_neve", ""))
+          # 1. Név feltöltése (töröljük az esetleges alapértelmezést, majd beírjuk)
+          elem.entry_nev.delete(0, "end")
+          elem.entry_nev.insert(0, adat.get("gyerek_neve", ""))
 
-        datum = adat.get("szuletesi_datum", "")
-        if datum:
-          try:
-            elem.entry_szul_datum.variable.set(datum)
-          except Exception:
-            pass
+          # 2. Születési dátum feltöltése
+          datum = adat.get("szuletesi_datum", "")
+          if datum:
+            elem.entry_szul_datum.variable.set(str(datum))
+            # Biztosítjuk, hogy az Entry mezőben is megjelenjen a szöveg
+            elem.entry_szul_datum.entry.delete(0, "end")
+            elem.entry_szul_datum.entry.insert(0, str(datum))
 
-        if "bejaras" in adat:
-          elem.dropdown_bejaras.set(adat["bejaras"])
-        elem.var_nagycsalados.set(adat.get("nagycsalados", False))
-        elem.var_sni.set(adat.get("sni", False))
-        elem.var_btm.set(adat.get("btm", False))
+          # 3. Bejárás dropdown
+          if "bejaras" in adat and adat["bejaras"]:
+            elem.dropdown_bejaras.set(str(adat["bejaras"]))
 
-        elem.grid(
-            row=len(self.gyerek_lista),
-            column=0,
-            padx=5,
-            pady=3,
-            sticky="ew",
-        )
-        self.gyerek_lista.append(elem)
+          # 4. Checkboxok (biztosítjuk a Bool típust)
+          elem.var_nagycsalados.set(
+              str(adat.get("nagycsalados", "")).lower() == "true"
+          )
+          elem.var_sni.set(str(adat.get("sni", "")).lower() == "true")
+          elem.var_btm.set(str(adat.get("btm", "")).lower() == "true")
 
-    self.gomb_pozicionalasa()
+          elem.grid(
+              row=len(self.gyerek_lista),
+              column=0,
+              padx=5,
+              pady=3,
+              sticky="ew",
+          )
+          self.gyerek_lista.append(elem)
+
+      self.gomb_pozicionalasa()
 
 
   def adatok_mentese_memoriaba(self):
