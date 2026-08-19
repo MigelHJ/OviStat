@@ -2,9 +2,21 @@ import customtkinter as ctk
 from gyerek import GyerekAdatlap
 from mainpage import MainPage
 from statisztika import StatisztikaNezet
+import os
+import sys
+import customtkinter as ctk
+
+# Meghatározza a program tényleges futási útvonalát (akár EXE, akár sima script)
+if getattr(sys, 'frozen', False):
+  # getattr-ral kérjük le, így a Pylance nem dob hibát
+  base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+else:
+  base_path = os.path.dirname(os.path.abspath(__file__))
+
+theme_path = os.path.join(base_path, "custom_theme.json")
 
 ctk.set_appearance_mode("Dark")
-ctk.set_default_color_theme("custom_theme.json")
+ctk.set_default_color_theme(theme_path)
 
 
 class App(ctk.CTk):
