@@ -5,7 +5,7 @@ class GyerekAdatlap(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         
-        # A oszlopok méretezése
+    # A oszlopok méretezése
         self.grid_columnconfigure(1, weight=0)
         self.grid_columnconfigure(2, weight=0)
         self.grid_columnconfigure(3, weight=0)
@@ -14,16 +14,16 @@ class GyerekAdatlap(ctk.CTkFrame):
         self.grid_columnconfigure(6, weight=0)
         self.grid_columnconfigure(7, weight=1)
 
-        # --- 1. Gyerek neve ---
+    # --- 1. Gyerek neve ---
         self.entry_nev = ctk.CTkEntry(self, placeholder_text="Gyerek neve...", width=350)
         self.entry_nev.grid(row=0, column=1, padx=5, pady=8)
 
-        # --- 2. Születési dátum ---
+    # --- 2. Születési dátum ---
         self.entry_szul_datum = ctk.CTkEntry(self, placeholder_text="ÉÉÉÉ.MM.DD", width=150)
         self.entry_szul_datum.bind("<FocusOut>", lambda event: self.datum_ellenorzes())
         self.entry_szul_datum.grid(row=0, column=2, padx=5, pady=8)
 
-        # --- 3. Bejárás ---
+    # --- 3. Bejárás ---
         bejaras_opciok = [
             "Velencei", "Kápolnásnyék", "Gárdony", 
             "Agárd", "Sukoró", "Pázmánd", "Pákozd", "Bejárós (egyéb)"
@@ -31,7 +31,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         self.dropdown_bejaras = ctk.CTkOptionMenu(self, values=bejaras_opciok, width=130)
         self.dropdown_bejaras.grid(row=0, column=3, padx=5, pady=8)
 
-        # --- 4. Jelölőnégyzetek ---
+    # --- 4. Jelölőnégyzetek ---
         self.var_nagycsalados = ctk.BooleanVar(value=False)
         self.chk_nagycsalados = ctk.CTkCheckBox(self, text="Nagycsaládos", variable=self.var_nagycsalados, checkbox_width=20, checkbox_height=20)
         self.chk_nagycsalados.grid(row=0, column=4, padx=8, pady=8)
@@ -44,7 +44,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         self.chk_btm = ctk.CTkCheckBox(self, text="BTM", variable=self.var_btm, checkbox_width=20, checkbox_height=20)
         self.chk_btm.grid(row=0, column=6, padx=(8, 10), pady=8)
 
-        # --- 5. Törlés Gomb ---
+    # --- 5. Törlés Gomb ---
         self.btn_torles = ctk.CTkButton(self, text="Törlés", fg_color="red", command=self.torles)
         self.btn_torles.grid(row=0, column=7, padx=5, pady=8, sticky="e")
         
