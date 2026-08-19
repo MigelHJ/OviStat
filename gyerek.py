@@ -231,7 +231,7 @@ class GyerekAdatlap(ctk.CTkFrame):
 
 
   def torles(self):
-    """Törli az adott kártyát a felületről és a listából."""
+    """Törli az adott kártyát a felületről és a MainPage gyerek_lista tömbjéből."""
     popup = AlertPopup(
         master=self.winfo_toplevel(),
         message="Biztosan törölni szeretnéd ezt a gyerek adatlapját?",
@@ -244,16 +244,14 @@ class GyerekAdatlap(ctk.CTkFrame):
       top_level = self.winfo_toplevel()
       main_page = getattr(top_level, "main_page", None)
 
-      if main_page is not None and hasattr(main_page, "app_controller"):
-        controller = getattr(main_page, "app_controller")
-        if (
-            hasattr(controller, "gyerek_lista")
-            and self in controller.gyerek_lista
-        ):
-          controller.gyerek_lista.remove(self)
+      # 1. Töröljük a kártyát a MainPage saját gyerek_lista tömbjéből!
+      if main_page is not None and hasattr(main_page, "gyerek_lista"):
+        if self in main_page.gyerek_lista:
+          main_page.gyerek_lista.remove(self)
 
-        self.destroy()
-        if hasattr(main_page, "lista_frissitese"):
-          main_page.lista_frissitese()
-      else:
-        self.destroy()
+      # 2. Megsemmisítjük a felületi elemet
+      self.destroy()
+
+      # 3. Frissítjük a megmaradt kártyák pozícióját a felületen
+      if main_page is not None and hasattr(main_page, "lista_frissitese"):
+        main_page.lista_frissitese()

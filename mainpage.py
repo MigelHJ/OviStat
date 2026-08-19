@@ -127,45 +127,42 @@ class MainPage(ctk.CTkFrame):
     ]
 
   def osszes_mentese(self):
-      """Végigmegy az összes kártyán, leellenőrzi őket, és ha nincs hiba, menti a CSV-be."""
-      if not self.gyerek_lista:
-        return
+    """Végigmegy az összes kártyán, leellenőrzi őket, és ha nincs hiba, menti a CSV-be."""
 
-      # 1. Minden kártyán külön lefut a dátumellenőrzés (a piros feliratok megjelennek)
-      van_hiba = False
-      for kartya in self.gyerek_lista:
-        if not kartya.datum_ellenorzes():
-          van_hiba = True
+    # 1. Minden kártyán külön lefut a dátumellenőrzés (ha van egyáltalán kártya)
+    van_hiba = False
+    for kartya in self.gyerek_lista:
+      if not kartya.datum_ellenorzes():
+        van_hiba = True
 
-      # Ha bármelyik kártya dátuma hibás volt, leállunk
-      if van_hiba:
-        return
+    # Ha bármelyik kártya dátuma hibás volt, leállunk
+    if van_hiba:
+      return
 
-      # 2. Megerősítés kérése
-      popup = AlertPopup(
-          master=self.winfo_toplevel(),
-          message=(
-              "Biztosan menteni szeretnéd az összes gyerek adatlapját a"
-              " fájlba?"
-          ),
-          szelesseg=520,
-          magassag=220,
-      )
-      self.wait_window(popup)
+    # 2. Megerősítés kérése (akkor is rákérdez, ha 0 kártya van!)
+    popup = AlertPopup(
+        master=self.winfo_toplevel(),
+        message=(
+            "Biztosan menteni szeretnéd a jelenlegi állapotot a fájlba?"
+        ),
+        szelesseg=520,
+        magassag=220,
+    )
+    self.wait_window(popup)
 
-      # 3. CSV fájl felülírása az összes kártya adatával
-      if popup.eredmeny:
-        try:
-          with open("gyerek_adatok.csv", "w", encoding="utf-8") as file:
-            for kartya in self.gyerek_lista:
-              data = kartya.adat_lekeres()
-              line = f"{data['id']},{data['gyerek_neve']},{data['szuletesi_datum']},{data['bejaras']},{data['nagycsalados']},{data['sni']},{data['btm']}\n"
-              file.write(line)
+    # 3. CSV fájl felülírása (ha üres a lista, üres fájlt ment el)
+    if popup.eredmeny:
+      try:
+        with open("gyerek_adatok.csv", "w", encoding="utf-8") as file:
+          for kartya in self.gyerek_lista:
+            data = kartya.adat_lekeres()
+            line = f"{data['id']},{data['gyerek_neve']},{data['szuletesi_datum']},{data['bejaras']},{data['nagycsalados']},{data['sni']},{data['btm']}\n"
+            file.write(line)
 
-          self.adatok_mentese_memoriaba()
-          print("Minden gyerek adata sikeresen mentve.")
-        except Exception as e:
-          print(f"Hiba történt a mentés során: {e}")
+        self.adatok_mentese_memoriaba()
+        print("Minden változtatás (akár a teljes törlés is) sikeresen mentve.")
+      except Exception as e:
+        print(f"Hiba történt a mentés során: {e}")
           
           
   def gomb_pozicionalasa(self):
