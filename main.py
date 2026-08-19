@@ -24,6 +24,16 @@ class App(ctk.CTk):
   def __init__(self):
     super().__init__()
 
+
+    # --- IKON BEÁLLÍTÁSA ---
+    icon_path = os.path.join(base_path, "OviStat.ico")
+    if os.path.exists(icon_path):
+      try:
+        self.iconbitmap(icon_path)
+      except Exception as e:
+        print(f"Ikon betöltési hiba: {e}")
+    # -----------------------
+    
     self.firststart = True # Jelzi, hogy a fájlbeolvasás még nem történt meg
     self.title("Gyerek Nyilvántartó")
     self.after(10, lambda: self.state("zoomed"))
