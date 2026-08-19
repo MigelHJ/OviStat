@@ -8,7 +8,7 @@ class AlertPopup(ctk.CTkToplevel):
         self.title("Megerősítés")
         self.resizable(False, False)
 
-        # Üzenet (Nagyobb, szembetűnő betűtípus)
+    # Üzenet (Nagyobb, szembetűnő betűtípus)
         label = ctk.CTkLabel(
             self, 
             text=message, 
@@ -17,11 +17,11 @@ class AlertPopup(ctk.CTkToplevel):
         )
         label.pack(padx=20, pady=(25, 15))
 
-        # Gombok kerete
-        gomb_frame = ctk.CTkFrame(self, fg_color="transparent")
+    # Gombok kerete
+        gomb_frame = ctk.CTkFrame(self, fg_color="transparent", border_width=0)
         gomb_frame.pack(pady=15)
 
-        # OK és Mégse gombok (Magasabb gombok, nagyobb szöveggel)
+    # OK és Mégse gombok (Magasabb gombok, nagyobb szöveggel)
         btn_ok = ctk.CTkButton(
             gomb_frame, 
             text="OK", 
