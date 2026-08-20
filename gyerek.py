@@ -26,8 +26,10 @@ class GyerekAdatlap(ctk.CTkFrame):
     self.grid_columnconfigure(4, weight=0)
     self.grid_columnconfigure(5, weight=0)
     self.grid_columnconfigure(6, weight=0)
-    self.grid_columnconfigure(7, weight=1)  # Hibaüzenet és Mentés területe
-    self.grid_columnconfigure(8, weight=0)  # Törlés gomb területe
+    self.grid_columnconfigure(7, weight=0)
+    self.grid_columnconfigure(8, weight=0)
+    self.grid_columnconfigure(9, weight=1)  # Hibaüzenet és Mentés területe
+    self.grid_columnconfigure(10, weight=0)  # Törlés gomb területe
 
     FONT_ENTRY = ("Arial", 15, "bold")
     FONT_CHECK = ("Arial", 14, "bold")
@@ -96,13 +98,35 @@ class GyerekAdatlap(ctk.CTkFrame):
     self.var_btm = ctk.BooleanVar(value=False)
     self.chk_btm = ctk.CTkCheckBox(
         self,
-        text="BTMN",
+        text="BTM",
         variable=self.var_btm,
         checkbox_width=28,
         checkbox_height=28,
         font=FONT_CHECK,
     )
     self.chk_btm.grid(row=0, column=6, padx=(12, 16), pady=12)
+    
+    self.var_HH = ctk.BooleanVar(value=False)
+    self.chk_HH = ctk.CTkCheckBox(
+            self,
+            text="HH",
+            variable=self.var_HH,
+            checkbox_width=28,
+            checkbox_height=28,
+            font=FONT_CHECK,
+        )
+    self.chk_HH.grid(row=0, column=7, padx=(12, 16), pady=12)
+        
+    self.var_HHH = ctk.BooleanVar(value=False)
+    self.chk_HHH = ctk.CTkCheckBox(
+            self,
+            text="HHH",
+            variable=self.var_HHH,
+            checkbox_width=28,
+            checkbox_height=28,
+            font=FONT_CHECK,
+        )
+    self.chk_HHH.grid(row=0, column=8, padx=(12, 16), pady=12)
 
     # --- 5. Hibaüzenet Label ---
     self.lbl_hibas_datum = ctk.CTkLabel(
@@ -112,7 +136,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         font=FONT_ERROR,
         anchor="w",
     )
-    self.lbl_hibas_datum.grid(row=0, column=7, padx=8, pady=12, sticky="w")
+    self.lbl_hibas_datum.grid(row=0, column=9, padx=8, pady=12, sticky="w")
 
     # --- Mentés gomb ---
     self.btn_mentes = ctk.CTkButton(
@@ -125,7 +149,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         font=FONT_ENTRY,
         command=lambda: self.fajlba_mentes("gyerek_adatok.csv"),
     )
-    self.btn_mentes.grid(row=0, column=7, padx=8, pady=12, sticky="e")
+    self.btn_mentes.grid(row=0, column=9, padx=8, pady=12, sticky="e")
 
     # --- 6. Törlés Gomb ---
     self.btn_torles = ctk.CTkButton(
@@ -138,7 +162,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         font=FONT_ENTRY,
         command=self.torles,
     )
-    self.btn_torles.grid(row=0, column=8, padx=8, pady=12, sticky="e")
+    self.btn_torles.grid(row=0, column=10, padx=8, pady=12, sticky="e")
 
   def adat_lekeres(self):
     return {
@@ -149,6 +173,8 @@ class GyerekAdatlap(ctk.CTkFrame):
         "nagycsalados": self.var_nagycsalados.get(),
         "sni": self.var_sni.get(),
         "btm": self.var_btm.get(),
+        "hh": self.var_HH.get(),
+        "hhh": self.var_HHH.get(),
     }
 
   def datum_ellenorzes(self) -> bool:

@@ -15,7 +15,7 @@ class MainPage(ctk.CTkFrame):
 
     FONT_MAIN_BTN = ("Arial", 16, "bold")
 
-    # --- 1. Gördíthető Lista Terület ---
+  # --- 1. Gördíthető Lista Terület ---
     self.scrollable_frame = ctk.CTkScrollableFrame(self)
     self.scrollable_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
     self.scrollable_frame.grid_columnconfigure(0, weight=1)
@@ -32,7 +32,7 @@ class MainPage(ctk.CTkFrame):
         command=self.gyerek_hozzaadasa,
     )
 
-    # --- 2. Alsó Vezérlőgombok ---
+  # --- 2. Alsó Vezérlőgombok ---
     self.bottom_button_frame = ctk.CTkFrame(self, corner_radius=8, height=70)
     self.bottom_button_frame.grid(
         row=1, column=0, sticky="ew", padx=20, pady=(5, 20)
@@ -49,7 +49,7 @@ class MainPage(ctk.CTkFrame):
     )
     self.btn_kiiras.pack(side="left", padx=10, pady=10)
 
-    # --- Mentés gomb ---
+  # --- Mentés gomb ---
     self.btn_mentes = ctk.CTkButton(
         self.bottom_button_frame,
         text="💾 Mentés",
@@ -72,7 +72,7 @@ class MainPage(ctk.CTkFrame):
     )
     self.btn_torles.pack(side="right", padx=10, pady=10)
 
-    # --- 3. Kártyák felépítése a memóriában lévő adatokból ---
+  # --- 3. Kártyák felépítése a memóriában lévő adatokból ---
     self.kartyat_felepit_adatokbol()
 
 
@@ -85,23 +85,24 @@ class MainPage(ctk.CTkFrame):
           gyerek_id = adat.get("id")
           elem = GyerekAdatlap(master=self.scrollable_frame, gyerek_id=gyerek_id)
 
-          # 1. Név feltöltése (töröljük az esetleges alapértelmezést, majd beírjuk)
+        # 1. Név feltöltése (töröljük az esetleges alapértelmezést, majd beírjuk)
           elem.entry_nev.delete(0, "end")
           elem.entry_nev.insert(0, adat.get("gyerek_neve", ""))
 
-          # 2. Születési dátum feltöltése
+        # 2. Születési dátum feltöltése
           datum = adat.get("szuletesi_datum", "")
           if datum:
             elem.entry_szul_datum.variable.set(str(datum))
+            
             # Biztosítjuk, hogy az Entry mezőben is megjelenjen a szöveg
             elem.entry_szul_datum.entry.delete(0, "end")
             elem.entry_szul_datum.entry.insert(0, str(datum))
 
-          # 3. Bejárás dropdown
+        # 3. Bejárás dropdown
           if "bejaras" in adat and adat["bejaras"]:
             elem.dropdown_bejaras.set(str(adat["bejaras"]))
 
-          # 4. Checkboxok (biztosítjuk a Bool típust)
+        # 4. Checkboxok (biztosítjuk a Bool típust)
           elem.var_nagycsalados.set(
               str(adat.get("nagycsalados", "")).lower() == "true"
           )
@@ -129,7 +130,7 @@ class MainPage(ctk.CTkFrame):
   def osszes_mentese(self):
     """Végigmegy az összes kártyán, leellenőrzi őket, és ha nincs hiba, menti a CSV-be."""
 
-    # 1. Minden kártyán külön lefut a dátumellenőrzés (ha van egyáltalán kártya)
+  # 1. Minden kártyán külön lefut a dátumellenőrzés (ha van egyáltalán kártya)
     van_hiba = False
     for kartya in self.gyerek_lista:
       if not kartya.datum_ellenorzes():
@@ -139,7 +140,7 @@ class MainPage(ctk.CTkFrame):
     if van_hiba:
       return
 
-    # 2. Megerősítés kérése (akkor is rákérdez, ha 0 kártya van!)
+  # 2. Megerősítés kérése (akkor is rákérdez, ha 0 kártya van!)
     popup = AlertPopup(
         master=self.winfo_toplevel(),
         message=(
@@ -150,7 +151,7 @@ class MainPage(ctk.CTkFrame):
     )
     self.wait_window(popup)
 
-    # 3. CSV fájl felülírása (ha üres a lista, üres fájlt ment el)
+  # 3. CSV fájl felülírása (ha üres a lista, üres fájlt ment el)
     if popup.eredmeny:
       try:
         with open("gyerek_adatok.csv", "w", encoding="utf-8") as file:
