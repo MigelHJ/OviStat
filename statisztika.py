@@ -23,21 +23,45 @@ class StatisztikaNezet(ctk.CTkFrame):
 
     def adatok_feldolgozasa(self):
         self.osszes_gyerek = len(self.gyerek_lista)
-        self.eletkorok = {
-            "3 évesnél fiatalabb": 0,
-            "3 éves": 0,
-            "4 éves": 0,
-            "5 éves": 0,
-            "6 éves": 0,
-            "7 éves": 0,
-            "7 évesnél idősebb": 0,
+        self.nem_szerinti_eletkorok = {
+            "Fiú": {
+                "3 évesnél fiatalabb": 0,
+                "3 éves": 0,
+                "4 éves": 0,
+                "5 éves": 0,
+                "6 éves": 0,
+                "7 éves": 0,
+                "7 évesnél idősebb": 0
+                },
+            "Lány": {
+                "3 évesnél fiatalabb": 0,
+                "3 éves": 0,
+                "4 éves": 0,
+                "5 éves": 0,
+                "6 éves": 0,
+                "7 éves": 0,
+                "7 évesnél idősebb": 0
+                }            
         }
-        self.jogok = {
+        self.specialitas = {          
           "Nagycsaládos": 0,
           "SNI (Sajátos Nevelés Igénylésű)": 0,
           "BTM (Beileszkedési, Tanulás, Magatartás)": 0,
           "HH": 0,
-          "HHH": 0
+          "HHH": 0          
+        }
+
+        self.etkezes={
+            "Egésznapos": 0,
+            "Félnapos": 0,
+            "Ételallergiás": 0,
+            "Térítés mentes": 0
+        }
+        
+        self.betegseg = {
+            "Tartós beteg": 0,
+            "Nem tartós beteg": 0,
+            "Családban tartós beteg": 0
         }
        
         self.helyi = 0
@@ -45,15 +69,33 @@ class StatisztikaNezet(ctk.CTkFrame):
 
         for gyerek in self.gyerek_lista:
             if gyerek.get("nagycsalados"):
-                self.jogok["Nagycsaládos"] += 1
+                self.specialitas["Nagycsaládos"] += 1
             if gyerek.get("sni"):
-                self.jogok["SNI (Sajátos Nevelés Igénylésű)"]  += 1
+                self.specialitas["SNI (Sajátos Nevelés Igénylésű)"]  += 1
             if gyerek.get("btm"):
-                self.jogok["BTM (Beileszkedési, Tanulás, Magatartás)"] += 1
+                self.specialitas["BTM (Beileszkedési, Tanulás, Magatartás)"] += 1
             if gyerek.get("hh"):
-                self.jogok["HH"] += 1
+                self.specialitas["HH"] += 1
             if gyerek.get("hhh"):
-                self.jogok["HHH"] += 1
+                self.specialitas["HHH"] += 1
+
+            # --- Étkezési típusok ---
+            if gyerek.get("etkezes") == "Egésznapos":
+                self.etkezes["Egésznapos"] += 1
+            if gyerek.get("etkezes") == "Félnapos":
+                self.etkezes["Félnapos"] += 1
+            if gyerek.get("etkezes") == "Ételallergiás":
+                self.etkezes["Ételallergiás"] += 1
+            if gyerek.get("etkezes") == "Térítés mentes":
+                self.etkezes["Térítés mentes"] += 1
+                
+            # --- Betegségek ---
+            if gyerek.get("tartosbeteg") == "Tartós beteg":
+                self.betegseg["Tartós beteg"] += 1
+            if gyerek.get("tartosbeteg") == "Nem tartós beteg":
+                self.betegseg["Nem tartós beteg"] += 1
+            if gyerek.get("tartosbeteg") == "Családban tartós beteg":
+                self.betegseg["Családban tartós beteg"] += 1
 
             bejaras = str(gyerek.get("bejaras", "")).lower()
             if "velence" in bejaras or "helyi" in bejaras:
@@ -78,21 +120,38 @@ class StatisztikaNezet(ctk.CTkFrame):
                         eletkor = self.eletkor_szamitas(
                             szul_datum, self.kivalasztott_datum
                         )
-                        if eletkor >= 0:
-                            if eletkor < 3:
-                                self.eletkorok["3 évesnél fiatalabb"] += 1
-                            elif eletkor == 3:
-                                self.eletkorok["3 éves"] += 1
-                            elif eletkor == 4:
-                                self.eletkorok["4 éves"] += 1
-                            elif eletkor == 5:
-                                self.eletkorok["5 éves"] += 1
-                            elif eletkor == 6:
-                                self.eletkorok["6 éves"] += 1
-                            elif eletkor == 7:
-                                self.eletkorok["7 éves"] += 1
-                            else:
-                                self.eletkorok["7 évesnél idősebb"] += 1
+                        if gyerek.get("nem") == "Fiú":
+                            if eletkor >= 0:
+                                if eletkor < 3:
+                                    self.nem_szerinti_eletkorok["Fiú"]["3 évesnél fiatalabb"] += 1
+                                elif eletkor == 3:
+                                    self.nem_szerinti_eletkorok["Fiú"]["3 éves"] += 1
+                                elif eletkor == 4:
+                                    self.nem_szerinti_eletkorok["Fiú"]["4 éves"] += 1
+                                elif eletkor == 5:
+                                    self.nem_szerinti_eletkorok["Fiú"]["5 éves"] += 1
+                                elif eletkor == 6:
+                                    self.nem_szerinti_eletkorok["Fiú"]["6 éves"] += 1
+                                elif eletkor == 7:
+                                    self.nem_szerinti_eletkorok["Fiú"]["7 éves"] += 1
+                                else:
+                                    self.nem_szerinti_eletkorok["Fiú"]["7 évesnél idősebb"] += 1
+                        elif gyerek.get("nem") == "Lány":
+                            if eletkor >= 0:
+                                if eletkor < 3:
+                                    self.nem_szerinti_eletkorok["Lány"]["3 évesnél fiatalabb"] += 1
+                                elif eletkor == 3:
+                                    self.nem_szerinti_eletkorok["Lány"]["3 éves"] += 1
+                                elif eletkor == 4:
+                                    self.nem_szerinti_eletkorok["Lány"]["4 éves"] += 1
+                                elif eletkor == 5:
+                                    self.nem_szerinti_eletkorok["Lány"]["5 éves"] += 1
+                                elif eletkor == 6:
+                                    self.nem_szerinti_eletkorok["Lány"]["6 éves"] += 1
+                                elif eletkor == 7:
+                                    self.nem_szerinti_eletkorok["Lány"]["7 éves"] += 1
+                                else:
+                                    self.nem_szerinti_eletkorok["Lány"]["7 évesnél idősebb"] += 1                        
                     except Exception:
                         pass
 
@@ -145,7 +204,7 @@ class StatisztikaNezet(ctk.CTkFrame):
         )
         self._kartya_kreálás(top_frame, "Bejárós", str(self.bejaros), 0, 2)
 
-        # 2. Életkori megoszlás Sorköz (Cím + Dátumválasztó egy vonalban)
+        # 2. Életkori megoszlás Fejléc
         eletkor_fejlec_frame = ctk.CTkFrame(self.scroll_frame, fg_color="transparent", height=50)
         eletkor_fejlec_frame.pack(fill="x", pady=(20, 10))
 
@@ -156,72 +215,145 @@ class StatisztikaNezet(ctk.CTkFrame):
         )
         lbl_eletkor.pack(side="left", padx=(0, 10))
 
-        # Dátumválasztó beágyazása közvetlenül az Életkori megoszlás mellé
         self.entry_szul_datum = CTkDateEntry(
             eletkor_fejlec_frame,
             width=140,
             height=42,
             border_width=0,
-            fg_color="transparent",  # Átlátszóvá teszi a külső keret hátterét
+            fg_color="transparent",
             bg_color="transparent"
         )
         self.entry_szul_datum.pack(side="left")
 
-        # Aktuálisan vizsgált dátum értékének beállítása
         mai_str = self.kivalasztott_datum.strftime("%Y.%m.%d")
         self.entry_szul_datum.variable.set(mai_str)
-
-        # Figyelő esemény hozzáadása
         self.entry_szul_datum.variable.trace_add("write", self.datum_valtozott)
 
-        # Életkor kártyák elrendezése
-        eletkor_frame = ctk.CTkFrame(self.scroll_frame)
-        eletkor_frame.pack(fill="x", pady=5)
+        # 3. Nemek szerinti bontás egymás mellett (2 Oszlopos konténer)
+        nemek_kontener = ctk.CTkFrame(self.scroll_frame, fg_color="transparent")
+        nemek_kontener.pack(fill="x", pady=10)
+        
+        # Grid súlyozás, hogy a két oszlop egyenlő széles legyen
+        nemek_kontener.grid_columnconfigure(0, weight=1)
+        nemek_kontener.grid_columnconfigure(1, weight=1)
 
-        MAX_OSZLOP = 8
-        for index, (ev, db) in enumerate(self.eletkorok.items()):
-            szazalek = (
-                (db / self.osszes_gyerek * 100) if self.osszes_gyerek > 0 else 0
+        for nem_idx, (nem, korok) in enumerate(self.nem_szerinti_eletkorok.items()):
+            nem_osszesen = sum(korok.values())
+            nem_szazalek = (nem_osszesen / self.osszes_gyerek * 100) if self.osszes_gyerek > 0 else 0
+
+            # Külön blokk a nemnek (Fiú / Lány)
+            nem_blokk = ctk.CTkFrame(nemek_kontener)
+            nem_blokk.grid(row=0, column=nem_idx, padx=8, pady=5, sticky="nsew")
+
+            lbl_nem_fejlec = ctk.CTkLabel(
+                nem_blokk,
+                text=f"{nem}: {nem_osszesen} fő ({int(nem_szazalek)}%)",
+                font=("Segoe UI", 16, "bold")
             )
-            cimke = ev
-            ertek = f"{db} fő ({int(szazalek)}%)"
+            lbl_nem_fejlec.pack(anchor="center", padx=15, pady=(15, 15))
 
-            rész_sor = index // MAX_OSZLOP
-            rész_oszlop = index % MAX_OSZLOP
+            # Rács keret a 12 oszlopos felosztásnak
+            korok_frame = ctk.CTkFrame(nem_blokk, fg_color="transparent")
+            korok_frame.pack(fill="x", padx=5, pady=(0, 10))
 
-            self._kartya_kreálás(
-                eletkor_frame, cimke, ertek, rész_sor, rész_oszlop
-            )
+            # 12 oszlop beállítása egyenlő súlyozással
+            for col in range(12):
+                korok_frame.grid_columnconfigure(col, weight=1)
 
-        # 3. Különleges jogállások
+            for index, (ev, db) in enumerate(korok.items()):
+                szazalek = (db / self.osszes_gyerek * 100) if self.osszes_gyerek > 0 else 0
+                ertek = f"{db} fő ({int(szazalek)}%)"
+
+                if index < 4:
+                    # Első 4 kártya: mindegyik 3 oszlop széles (0-3, 3-6, 6-9, 9-12)
+                    row = 0
+                    col = index * 3
+                    span = 3
+                else:
+                    # Második 3 kártya: mindegyik 4 oszlop széles (0-4, 4-8, 8-12)
+                    row = 1
+                    col = (index - 4) * 4
+                    span = 4
+
+                # Egyedi kártya létrehozása a megadott fesztávval (span)
+                card = ctk.CTkFrame(korok_frame)
+                card.grid(row=row, column=col, columnspan=span, padx=4, pady=4, sticky="nsew")
+                
+                ctk.CTkLabel(
+                    card, text=ev, font=("Segoe UI", 13), text_color="gray70"
+                ).pack(pady=(10, 2))
+                ctk.CTkLabel(card, text=ertek, font=("Segoe UI", 18, "bold")).pack(
+                    pady=(0, 10)
+                )
+
+        # 4. Különleges jogállások
         lbl_jogallas = ctk.CTkLabel(
             self.scroll_frame,
             text="Specialitások & Kategóriák",
-            font=("Segoe UI", 18, "bold"),
+            font=("Segoe UI", 18, "bold")
         )
         lbl_jogallas.pack(anchor="w", pady=(20, 10))
 
         jog_frame = ctk.CTkFrame(self.scroll_frame)
         jog_frame.pack(fill="x", pady=5)
 
-
-             
-
-        MAX_OSZLOP = 5
-        for index, (jog, db) in enumerate(self.jogok.items()):
-            szazalek = (
-                (db / self.osszes_gyerek * 100) if self.osszes_gyerek > 0 else 0
-            )
-            cimke = jog
+        MAX_OSZLOP_JOG = 5
+        for index, (jog, db) in enumerate(self.specialitas.items()):
+            szazalek = (db / self.osszes_gyerek * 100) if self.osszes_gyerek > 0 else 0
             ertek = f"{db} fő ({int(szazalek)}%)"
 
-            rész_sor = index // MAX_OSZLOP
-            rész_oszlop = index % MAX_OSZLOP
+            sor = index // MAX_OSZLOP_JOG
+            oszlop = index % MAX_OSZLOP_JOG
 
             self._kartya_kreálás(
-                jog_frame, cimke, ertek, rész_sor, rész_oszlop
+                jog_frame, jog, ertek, sor, oszlop
             )
        
+       # 5. Étkezési típusok
+        lbl_etkezes = ctk.CTkLabel(
+            self.scroll_frame,
+            text="Étkezési típusok",
+            font=("Segoe UI", 18, "bold")
+        )
+        lbl_etkezes.pack(anchor="w", pady=(20, 10))
+        
+        etkezes_frame = ctk.CTkFrame(self.scroll_frame)
+        etkezes_frame.pack(fill="x", pady=5)
+        
+        MAX_OSZLOP_ETKEZES = 4
+        for index, (tipus, db) in enumerate(self.etkezes.items()):
+            szazalek = (db / self.osszes_gyerek * 100) if self.osszes_gyerek > 0 else 0
+            ertek = f"{db} fő ({int(szazalek)}%)"
+
+            sor = index // MAX_OSZLOP_ETKEZES
+            oszlop = index % MAX_OSZLOP_ETKEZES
+
+            self._kartya_kreálás(
+                etkezes_frame, tipus, ertek, sor, oszlop
+            )
+            
+        # 6. Betegségek
+        lbl_betegseg = ctk.CTkLabel(
+            self.scroll_frame,
+            text="Tartósbetegségek",
+            font=("Segoe UI", 18, "bold")
+        )
+        lbl_betegseg.pack(anchor="w", pady=(20, 10))
+        
+        betegseg_frame = ctk.CTkFrame(self.scroll_frame)
+        betegseg_frame.pack(fill="x", pady=5)
+        
+        MAX_OSZLOP_BETEGSEG = 3
+        for index, (betegseg, db) in enumerate(self.betegseg.items()):
+            szazalek = (db / self.osszes_gyerek * 100) if self.osszes_gyerek > 0 else 0
+            ertek = f"{db} fő ({int(szazalek)}%)"
+
+            sor = index // MAX_OSZLOP_BETEGSEG
+            oszlop = index % MAX_OSZLOP_BETEGSEG
+
+            self._kartya_kreálás(
+                betegseg_frame, betegseg, ertek, sor, oszlop
+            )
 
     def _kartya_kreálás(self, master, cim, ertek, row, col):
         card = ctk.CTkFrame(master)

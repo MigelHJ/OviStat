@@ -100,16 +100,17 @@ class App(ctk.CTk):
           sor = line.strip()
           if sor:
             adatok = sor.split(",")
-            # Ha megvan a 7 mező (id, név, dátum, bejárás, nagycsaládos, sni, btm)
+            # A nem mező az új formátumban a bejárás után található.
             if len(adatok) >= 7:
               self.gyerek_adatok.append({
                   "id": adatok[0].strip(),
                   "gyerek_neve": adatok[1].strip(),
                   "szuletesi_datum": adatok[2].strip(),
                   "bejaras": adatok[3].strip(),
-                  "nagycsalados": adatok[4].strip().lower() == "true",
-                  "sni": adatok[5].strip().lower() == "true",
-                  "btm": adatok[6].strip().lower() == "true",
+                  "nem": adatok[4].strip() if len(adatok) >= 8 else "",
+                  "nagycsalados": adatok[5].strip().lower() == "true" if len(adatok) >= 8 else adatok[4].strip().lower() == "true",
+                  "sni": adatok[6].strip().lower() == "true" if len(adatok) >= 8 else adatok[5].strip().lower() == "true",
+                  "btm": adatok[7].strip().lower() == "true" if len(adatok) >= 8 else adatok[6].strip().lower() == "true",
               })
       print(
           f"Adatok sikeresen betöltve a '{fajlnev}' fájlból. Beolvasva:"

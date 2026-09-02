@@ -28,8 +28,11 @@ class GyerekAdatlap(ctk.CTkFrame):
     self.grid_columnconfigure(6, weight=0)
     self.grid_columnconfigure(7, weight=0)
     self.grid_columnconfigure(8, weight=0)
-    self.grid_columnconfigure(9, weight=1)  # Hibaüzenet és Mentés területe
-    self.grid_columnconfigure(10, weight=0)  # Törlés gomb területe
+    self.grid_columnconfigure(9, weight=0)
+    self.grid_columnconfigure(10, weight=0)
+    self.grid_columnconfigure(11, weight=0)
+    self.grid_columnconfigure(12, weight=1)  # Mentés területe
+    self.grid_columnconfigure(13, weight=0)  # Törlés gomb területe
 
     FONT_ENTRY = ("Arial", 15, "bold")
     FONT_CHECK = ("Arial", 14, "bold")
@@ -39,7 +42,7 @@ class GyerekAdatlap(ctk.CTkFrame):
     self.entry_nev = ctk.CTkEntry(
         self,
         placeholder_text="Gyerek neve...",
-        width=450,
+        width=250,
         height=42,
         font=FONT_ENTRY,
     )
@@ -51,7 +54,7 @@ class GyerekAdatlap(ctk.CTkFrame):
     )
     self.entry_szul_datum.grid(row=0, column=2, padx=8, pady=12)
 
-    # --- 3. Bejárás ---
+    # --- 3. Dropdownok ---
     bejaras_opciok = [
         "Velence",
         "Kápolnásnyék",
@@ -62,15 +65,65 @@ class GyerekAdatlap(ctk.CTkFrame):
         "Pákozd",
         "Bejárós (egyéb)",
     ]
+    
+    nem_opciok = [
+        "Fiú",
+        "Lány",
+    ]
+    
+    tartosbeteg_opciok = [
+      "Tartós beteg",
+      "Nem tartós beteg",
+      "Családban tartós beteg",
+    ]
+    
+    etkezesi_opciok = [
+      "Egésznapos",
+      "Félnapos",
+      "Ételallergiás",
+      "Térítés mentes"
+    ]
+    
     self.dropdown_bejaras = ctk.CTkOptionMenu(
         self,
         values=bejaras_opciok,
         width=160,
         height=42,
         font=FONT_ENTRY,
-        dropdown_font=FONT_ENTRY,
+        dropdown_font=FONT_ENTRY
     )
     self.dropdown_bejaras.grid(row=0, column=3, padx=8, pady=12)
+
+    self.dropdown_nem = ctk.CTkOptionMenu(
+        self,
+        values=nem_opciok,
+        width=160,
+        height=42,
+        font=FONT_ENTRY,
+        dropdown_font=FONT_ENTRY
+    )
+    self.dropdown_nem.grid(row=0, column=4, padx=8, pady=12)
+
+    self.dropdown_tartosbeteg = ctk.CTkOptionMenu(
+        self,
+        values=tartosbeteg_opciok,
+        width=160,
+        height=42,
+        font=FONT_ENTRY,
+        dropdown_font=FONT_ENTRY
+    )
+    self.dropdown_tartosbeteg.grid(row=0, column=5, padx=8, pady=12)
+    
+    self.dropdown_etkezes = ctk.CTkOptionMenu(
+        self,
+        values=etkezesi_opciok,
+        width=160,
+        height=42,
+        font=FONT_ENTRY,
+        dropdown_font=FONT_ENTRY
+    )
+    self.dropdown_etkezes.grid(row=0, column=6, padx=8, pady=12)
+    
 
     # --- 4. Jelölőnégyzetek ---
     self.var_nagycsalados = ctk.BooleanVar(value=False)
@@ -82,7 +135,8 @@ class GyerekAdatlap(ctk.CTkFrame):
         checkbox_height=28,
         font=FONT_CHECK,
     )
-    self.chk_nagycsalados.grid(row=0, column=4, padx=12, pady=12)
+    
+    self.chk_nagycsalados.grid(row=0, column=7, padx=12, pady=12)
 
     self.var_sni = ctk.BooleanVar(value=False)
     self.chk_sni = ctk.CTkCheckBox(
@@ -93,7 +147,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         checkbox_height=28,
         font=FONT_CHECK,
     )
-    self.chk_sni.grid(row=0, column=5, padx=12, pady=12)
+    self.chk_sni.grid(row=0, column=8, padx=12, pady=12)
 
     self.var_btm = ctk.BooleanVar(value=False)
     self.chk_btm = ctk.CTkCheckBox(
@@ -104,7 +158,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         checkbox_height=28,
         font=FONT_CHECK,
     )
-    self.chk_btm.grid(row=0, column=6, padx=(12, 16), pady=12)
+    self.chk_btm.grid(row=0, column=9, padx=(12, 16), pady=12)
     
     self.var_HH = ctk.BooleanVar(value=False)
     self.chk_HH = ctk.CTkCheckBox(
@@ -115,7 +169,7 @@ class GyerekAdatlap(ctk.CTkFrame):
             checkbox_height=28,
             font=FONT_CHECK,
         )
-    self.chk_HH.grid(row=0, column=7, padx=(12, 16), pady=12)
+    self.chk_HH.grid(row=0, column=10, padx=(12, 16), pady=12)
         
     self.var_HHH = ctk.BooleanVar(value=False)
     self.chk_HHH = ctk.CTkCheckBox(
@@ -126,18 +180,9 @@ class GyerekAdatlap(ctk.CTkFrame):
             checkbox_height=28,
             font=FONT_CHECK,
         )
-    self.chk_HHH.grid(row=0, column=8, padx=(12, 16), pady=12)
+    self.chk_HHH.grid(row=0, column=11, padx=(12, 16), pady=12)
 
-    # --- 5. Hibaüzenet Label ---
-    self.lbl_hibas_datum = ctk.CTkLabel(
-        self,
-        text="",
-        text_color="#FF4D4D",
-        font=FONT_ERROR,
-        anchor="w",
-    )
-    self.lbl_hibas_datum.grid(row=0, column=9, padx=8, pady=12, sticky="w")
-
+   
     # --- Mentés gomb ---
     self.btn_mentes = ctk.CTkButton(
         self,
@@ -149,7 +194,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         font=FONT_ENTRY,
         command=lambda: self.fajlba_mentes("gyerek_adatok.csv"),
     )
-    self.btn_mentes.grid(row=0, column=9, padx=8, pady=12, sticky="e")
+    self.btn_mentes.grid(row=0, column=12, padx=8, pady=12, sticky="e")
 
     # --- 6. Törlés Gomb ---
     self.btn_torles = ctk.CTkButton(
@@ -162,7 +207,7 @@ class GyerekAdatlap(ctk.CTkFrame):
         font=FONT_ENTRY,
         command=self.torles,
     )
-    self.btn_torles.grid(row=0, column=10, padx=8, pady=12, sticky="e")
+    self.btn_torles.grid(row=0, column=13, padx=8, pady=12, sticky="e")
 
   def adat_lekeres(self):
     return {
@@ -170,6 +215,9 @@ class GyerekAdatlap(ctk.CTkFrame):
         "gyerek_neve": self.entry_nev.get(),
         "szuletesi_datum": self.entry_szul_datum.variable.get(),
         "bejaras": self.dropdown_bejaras.get(),
+        "nem": self.dropdown_nem.get(),
+        "tartosbeteg": self.dropdown_tartosbeteg.get(),
+        "etkezes": self.dropdown_etkezes.get(),
         "nagycsalados": self.var_nagycsalados.get(),
         "sni": self.var_sni.get(),
         "btm": self.var_btm.get(),
@@ -182,10 +230,6 @@ class GyerekAdatlap(ctk.CTkFrame):
       self.mentes_megtortent = True
       datum_str = str(self.entry_szul_datum.variable.get()).strip()
 
-      if not datum_str:
-        self.lbl_hibas_datum.configure(text="Hibás dátum")
-        return False
-
       szul_datum = None
       for fmt in ("%Y.%m.%d", "%Y-%m-%d", "%Y/%m/%d"):
         try:
@@ -193,14 +237,8 @@ class GyerekAdatlap(ctk.CTkFrame):
           break
         except ValueError:
           continue
-
-      if szul_datum is None:
-        self.lbl_hibas_datum.configure(text="Hibás dátum")
-        return False
-
-      self.lbl_hibas_datum.configure(text="")
+ 
       return True
-  
   
   def fajlba_mentes(self, fajlnev):
     """Elmenti az ÖSSZES gyerek kártyájának adatát a fájlba, miután felülvizsgálta a dátumokat."""

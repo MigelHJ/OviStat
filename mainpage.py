@@ -98,9 +98,15 @@ class MainPage(ctk.CTkFrame):
             elem.entry_szul_datum.entry.delete(0, "end")
             elem.entry_szul_datum.entry.insert(0, str(datum))
 
-        # 3. Bejárás dropdown
+        # 3. Dropdownok
           if "bejaras" in adat and adat["bejaras"]:
             elem.dropdown_bejaras.set(str(adat["bejaras"]))
+          if "nem" in adat and adat["nem"]:
+            elem.dropdown_nem.set(str(adat["nem"]))
+          if "tartosbeteg" in adat and adat["tartosbeteg"]:
+            elem.dropdown_tartosbeteg.set(str(adat["tartosbeteg"]))
+          if "etkezes" in adat and adat["etkezes"]:
+            elem.dropdown_etkezes.set(str(adat["etkezes"]))
 
         # 4. Checkboxok (biztosítjuk a Bool típust)
           elem.var_nagycsalados.set(
