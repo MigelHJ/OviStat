@@ -6,7 +6,7 @@ from ctkdateentry import CTkDateEntry
 
 class StatisztikaNezet(ctk.CTkFrame):
     FONT_ENTRY = ("Arial", 15, "bold")
-
+    
     def __init__(self, master, gyerek_lista=None, **kwargs):
         super().__init__(master, **kwargs)
 

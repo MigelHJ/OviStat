@@ -83,7 +83,7 @@ class App(ctk.CTk):
     btn_vissza = ctk.CTkButton(
         stat_frame,
         text="← Vissza az Adatbevitelhez",
-        font=("Arial", 14, "bold"),
+        font=("Arial", 24, "bold"),
         command=self.show_mainpage,
         height=40,
         width=200

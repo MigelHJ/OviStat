@@ -10,7 +10,7 @@ import zipfile
 # ÁLLÍTSD BE A SAJÁT ADATAIDAT:
 GITHUB_USER = "MigelHJ"  # Pl. vorak...
 GITHUB_REPO = "OviStat"
-CURRENT_VERSION = "v0.5.7"  # Mindig növeld új kiadásnál (v1.0.1, v1.0.2...)
+CURRENT_VERSION = "v0.6.0"  # Mindig növeld új kiadásnál (v1.0.1, v1.0.2...)
 
 
 def get_latest_release():

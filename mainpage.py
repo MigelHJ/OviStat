@@ -16,6 +16,8 @@ class MainPage(ctk.CTkFrame):
     self.grid_columnconfigure(0, weight=1)
 
     FONT_MAIN_BTN = ("Arial", 16, "bold")
+    
+    FONT_ICON_BTN = ("Arial", 24, "bold")
 
   # --- 1. Gördíthető Lista Terület ---
     self.scrollable_frame = ctk.CTkScrollableFrame(self)
@@ -42,22 +44,22 @@ class MainPage(ctk.CTkFrame):
 
     self.btn_kiiras = ctk.CTkButton(
         self.bottom_button_frame,
-        text="Statisztikák és Kimutatások",
+        text="🧮 Statisztikák és Kimutatások",
         fg_color="#555555",
         hover_color="#333333",
         height=48,
-        font=FONT_MAIN_BTN,
+        font=FONT_ICON_BTN,
         command=self.app_controller.show_statisztika,
     )
     self.btn_kiiras.pack(side="left", padx=10, pady=10)
 
     self.update_btn = ctk.CTkButton(
         self.bottom_button_frame,
-        text="Frissítés keresése",
+        text="🔧 Frissítés keresése",
         fg_color="#555555",
         hover_color="#333333",
         height=48,
-        font=FONT_MAIN_BTN,
+        font=FONT_ICON_BTN,
         command=lambda: threading.Thread(
             target=run_update, args=(self,), daemon=True
         ).start(),
