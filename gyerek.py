@@ -1,6 +1,7 @@
 import datetime as dt
 from typing import TYPE_CHECKING, cast
 import uuid
+import csv
 from alert import AlertPopup
 from ctkdateentry import CTkDateEntry
 import customtkinter as ctk
@@ -247,8 +248,8 @@ class GyerekAdatlap(ctk.CTkFrame):
     gyerek_lista = []
     if main_page is not None and hasattr(main_page, "app_controller"):
       controller = getattr(main_page, "app_controller")
-      if hasattr(controller, "gyerek_lista"):
-        gyerek_lista = controller.gyerek_lista
+      if hasattr(main_page, "gyerek_lista"):
+        gyerek_lista = main_page.gyerek_lista
 
     if not gyerek_lista:
       gyerek_lista = [self]
@@ -277,12 +278,22 @@ class GyerekAdatlap(ctk.CTkFrame):
 
     if popup.eredmeny:
       try:
-        with open(fajlnev, "w", encoding="utf-8") as file:
+        adatfajl = getattr(
+            getattr(main_page, "app_controller", None),
+            "adatfajl",
+            fajlnev,
+        )
+        with open(adatfajl, "w", encoding="utf-8", newline="") as file:
+          writer = csv.writer(file, lineterminator="\n")
           for kartya in gyerek_lista:
             data = kartya.adat_lekeres()
             if data["gyerek_neve"].strip():
-              line = f"{data['id']},{data['gyerek_neve']},{data['szuletesi_datum']},{data['bejaras']},{data['nagycsalados']},{data['sni']},{data['btm']}\n"
-              file.write(line)
+              writer.writerow([
+                  data["id"], data["gyerek_neve"], data["szuletesi_datum"],
+                  data["bejaras"], data["nem"], data["tartosbeteg"],
+                  data["etkezes"], data["nagycsalados"], data["sni"],
+                  data["btm"], data["hh"], data["hhh"],
+              ])
 
         if main_page and hasattr(main_page, "adatok_mentese_memoriaba"):
           main_page.adatok_mentese_memoriaba()

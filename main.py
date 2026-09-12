@@ -5,13 +5,16 @@ from statisztika import StatisztikaNezet
 import os
 import sys
 import customtkinter as ctk
+import csv
 
 # Meghatározza a program tényleges futási útvonalát (akár EXE, akár sima script)
 if getattr(sys, 'frozen', False):
   # getattr-ral kérjük le, így a Pylance nem dob hibát
   base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+  data_path = os.path.dirname(sys.executable)
 else:
   base_path = os.path.dirname(os.path.abspath(__file__))
+  data_path = base_path
 
 theme_path = os.path.join(base_path, "custom_theme.json")
 
@@ -40,6 +43,7 @@ class App(ctk.CTk):
 
     # Csak az nyers adatokat tároljuk (dict formátumban), nem a widgeteket!
     self.gyerek_adatok = []
+    self.adatfajl = os.path.join(data_path, "gyerek_adatok.csv")
 
     # Konténer keret a nézeteknek
     self.container = ctk.CTkFrame(self)
@@ -55,7 +59,7 @@ class App(ctk.CTk):
   def show_mainpage(self):
     """Megjeleníti a fő adatbeviteli oldalt."""
     if self.firststart:
-      self.adatok_betoltese_fajlbol("gyerek_adatok.csv")
+      self.adatok_betoltese_fajlbol(self.adatfajl)
       self.firststart = False  # Jelöljük, hogy a fájlbeolvasás megtörtént
     else:
       self.clear_container()
@@ -95,23 +99,34 @@ class App(ctk.CTk):
   def adatok_betoltese_fajlbol(self, fajlnev="gyerek_adatok.csv"):
     self.gyerek_adatok = []
     try:
-      with open(fajlnev, "r", encoding="utf-8") as file:
-        for line in file:
-          sor = line.strip()
-          if sor:
-            adatok = sor.split(",")
-            # A nem mező az új formátumban a bejárás után található.
-            if len(adatok) >= 7:
-              self.gyerek_adatok.append({
-                  "id": adatok[0].strip(),
-                  "gyerek_neve": adatok[1].strip(),
-                  "szuletesi_datum": adatok[2].strip(),
-                  "bejaras": adatok[3].strip(),
-                  "nem": adatok[4].strip() if len(adatok) >= 8 else "",
-                  "nagycsalados": adatok[5].strip().lower() == "true" if len(adatok) >= 8 else adatok[4].strip().lower() == "true",
-                  "sni": adatok[6].strip().lower() == "true" if len(adatok) >= 8 else adatok[5].strip().lower() == "true",
-                  "btm": adatok[7].strip().lower() == "true" if len(adatok) >= 8 else adatok[6].strip().lower() == "true",
-              })
+      with open(fajlnev, "r", encoding="utf-8", newline="") as file:
+        for row in csv.reader(file):
+          if not row:
+            continue
+          row = [value.strip() for value in row]
+          if len(row) >= 12:
+            values = row[:12]
+          elif len(row) >= 7:
+            # A korábbi formátum nem tartalmazta a nem, tartósbeteg és
+            # étkezés mezőket.
+            values = row[:4] + ["", "", ""] + row[4:7] + ["", ""]
+          else:
+            continue
+
+          self.gyerek_adatok.append({
+              "id": values[0],
+              "gyerek_neve": values[1],
+              "szuletesi_datum": values[2],
+              "bejaras": values[3],
+              "nem": values[4],
+              "tartosbeteg": values[5],
+              "etkezes": values[6],
+              "nagycsalados": values[7].lower() == "true",
+              "sni": values[8].lower() == "true",
+              "btm": values[9].lower() == "true",
+              "hh": values[10].lower() == "true",
+              "hhh": values[11].lower() == "true",
+          })
       print(
           f"Adatok sikeresen betöltve a '{fajlnev}' fájlból. Beolvasva:"
           f" {len(self.gyerek_adatok)} gyerek."
@@ -120,7 +135,6 @@ class App(ctk.CTk):
       print(f"A(z) '{fajlnev}' fájl még nem létezik.")
     except Exception as e:
       print(f"Hiba a fájl beolvasásakor: {e}")
-
 
 if __name__ == "__main__":
   app = App()

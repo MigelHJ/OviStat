@@ -3,6 +3,7 @@ from alert import AlertPopup
 from gyerek import GyerekAdatlap
 from updater import run_update
 import threading
+import csv
 
 class MainPage(ctk.CTkFrame):
 
@@ -129,6 +130,8 @@ class MainPage(ctk.CTkFrame):
           )
           elem.var_sni.set(str(adat.get("sni", "")).lower() == "true")
           elem.var_btm.set(str(adat.get("btm", "")).lower() == "true")
+          elem.var_HH.set(str(adat.get("hh", "")).lower() == "true")
+          elem.var_HHH.set(str(adat.get("hhh", "")).lower() == "true")
 
           elem.grid(
               row=len(self.gyerek_lista),
@@ -175,11 +178,17 @@ class MainPage(ctk.CTkFrame):
   # 3. CSV fájl felülírása (ha üres a lista, üres fájlt ment el)
     if popup.eredmeny:
       try:
-        with open("gyerek_adatok.csv", "w", encoding="utf-8") as file:
+        adatfajl = getattr(self.app_controller, "adatfajl", "gyerek_adatok.csv")
+        with open(adatfajl, "w", encoding="utf-8", newline="") as file:
+          writer = csv.writer(file, lineterminator="\n")
           for kartya in self.gyerek_lista:
             data = kartya.adat_lekeres()
-            line = f"{data['id']},{data['gyerek_neve']},{data['szuletesi_datum']},{data['bejaras']},{data['nagycsalados']},{data['sni']},{data['btm']}\n"
-            file.write(line)
+            writer.writerow([
+                data["id"], data["gyerek_neve"], data["szuletesi_datum"],
+                data["bejaras"], data["nem"], data["tartosbeteg"],
+                data["etkezes"], data["nagycsalados"], data["sni"],
+                data["btm"], data["hh"], data["hhh"],
+            ])
 
         self.adatok_mentese_memoriaba()
         print("Minden változtatás (akár a teljes törlés is) sikeresen mentve.")
