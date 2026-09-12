@@ -185,7 +185,7 @@ class GyerekAdatlap(ctk.CTkFrame):
     # --- Mentés gomb ---
     self.btn_mentes = ctk.CTkButton(
         self,
-        text="💾 Mentés",
+        text="Mentés",
         fg_color="#4CAF50",
         hover_color="#388E3C",
         height=42,
