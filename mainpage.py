@@ -1,7 +1,8 @@
 import customtkinter as ctk
 from alert import AlertPopup
 from gyerek import GyerekAdatlap
-
+from updater import run_update
+import threading
 
 class MainPage(ctk.CTkFrame):
 
@@ -48,6 +49,20 @@ class MainPage(ctk.CTkFrame):
         command=self.app_controller.show_statisztika,
     )
     self.btn_kiiras.pack(side="left", padx=10, pady=10)
+
+    self.update_btn = ctk.CTkButton(
+        self.bottom_button_frame,
+        text="Frissítés keresése",
+        fg_color="#555555",
+        hover_color="#333333",
+        height=48,
+        font=FONT_MAIN_BTN,
+        command=lambda: threading.Thread(
+            target=run_update, args=(self,), daemon=True
+        ).start(),
+    )
+    self.update_btn.pack(side="left", pady=10, padx=10)
+
 
   # --- Mentés gomb ---
     self.btn_mentes = ctk.CTkButton(
